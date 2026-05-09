@@ -1,12 +1,58 @@
-# Day 32 - Docker Volumes & Networking
+# Day 32: Docker Volumes & Networking 学习笔记
 
-## Task 1: The Problem (Ephemeral Data)
+## 1. 核心目标
+解决容器化中的两大核心挑战：
+- **数据持久化**：防止容器删除后数据丢失。
+- **容器间通信**：让多个容器能够通过“名称”互相发现并协作。
 
-### Steps taken:
-1. Run a Postgres container without a volume.
-2. Create a table and insert data.
-3. Remove the container.
-4. Start a new container and check for the data.
+---
 
-### Observations:
-- Data was lost after the container was removed because no volume was attached. Containers are ephemeral by nature.
+## 2. 实验记录
+
+### Task 1: 容器的易失性 (The Problem)
+- **实验过程**：启动一个没有挂载卷的 MySQL 容器，创建数据库 `Day32Test` 后删除容器。
+- **现象**：重新启动新容器后，`Day32Test` 彻底消失。
+- **结论**：容器默认是 **Ephemeral (瞬态的)**。存储在容器可写层的数据随容器销毁而销毁。
+
+### Task 2: 命名卷 (Named Volumes)
+- **命令**：`docker volume create db-data`
+- **实验过程**：使用 `-v db-data:/var/lib/mysql` 启动容器并存入数据。
+- **结论**：**成功实现数据持久化**。卷是独立于容器生命周期的“外部硬盘”，即使容器被 `rm`，挂载同一个卷的新容器依然能读取旧数据。
+
+### Task 3: 绑定挂载 (Bind Mounts)
+- **命令**：`-v "$(pwd)/my-web-site:/usr/share/nginx/html"`
+- **实验过程**：将宿主机本地文件夹挂载到 Nginx 容器。
+- **优势**：**实时同步**。修改宿主机的 `index.html`，刷新浏览器即可看到变化。非常适合开发环境（Hot Reload）。
+
+### Task 4 & 5: Docker 网络与 DNS
+- **默认 Bridge 网络**：容器间只能通过 IP 访问，无法解析容器名（Ping 不通名称）。
+- **自定义网络 (`my-app-net`)**：
+    - 命令：`docker network create my-app-net`
+    - 特性：**内置 DNS 服务**。加入此网络的容器可以互相通过 `--name` 指定的名字进行通信。
+- **结论**：生产环境必须使用自定义网络以实现稳定的服务发现。
+
+---
+
+## 3. 终极整合 (Task 6)
+成功模拟了一个小型应用架构：
+1. 创建网络：`final-app-net`
+2. 启动数据库容器 `prod-db`（挂载卷 + 加入网络）。
+3. 启动应用容器 `my-app`（加入网络）。
+4. **验证结果**：`docker exec my-app ping prod-db` 成功，证明了存储与通信的完美配合。
+
+---
+
+## 4. 关键对比总结
+
+| 特性 | 命名卷 (Named Volume) | 绑定挂载 (Bind Mount) |
+| :--- | :--- | :--- |
+| **存储位置** | 由 Docker 管理（通常在 `/var/lib/docker/volumes`） | 由你指定（宿主机任意路径） |
+| **易用性** | 简单，不需要关心具体路径 | 需要管理宿主机的目录权限 |
+| **典型场景** | 数据库、持久化日志 | 代码开发、配置文件同步 |
+| **隔离性** | 高（宿主机用户不易误删） | 低（宿主机直接可见可改） |
+
+---
+**学习心得**：
+Docker 不仅仅是“打包代码”，它是在构建一套完整的虚拟化基础设施。通过 Volume 和 Network，我们把静态的“镜像”变成了动态且稳健的“服务系统”。
+
+`#90DaysOfDevOps` `#Docker` `#Persistence` `#Networking`
