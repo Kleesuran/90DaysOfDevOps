@@ -83,4 +83,11 @@
 - [ ] Day-81：Amazon EKS 自动化：利用 Terraform 部署生产级集群，掌握 AWS CLI 配置与集群基础审计。
 - [ ] Day-82：EKS 网络与存储：实战 Gateway API 流量管理，配置 EBS CSI 驱动实现数据库持久化留存。
 - [ ] Day-83：EKS 综合实战：在 AWS 上部署生产级 AI 银行应用，集成 HPA 自动扩容与全方位监控加固。
+- [ ] Day-84：GitOps 与 ArgoCD 入门：理解 GitOps 核心原则，部署 ArgoCD 并实现应用声明式持续交付。
+- [ ] Day-85：ArgoCD 深度解析：掌握同步策略（Sync Strategies）、自动回滚与多应用/多环境配置管理。
+- [ ] Day-86：GitOps 综合实战：利用 ArgoCD 与 GitHub Actions 为 AI-BankApp 构建端到端的 GitOps CI/CD 闭环流水线。
+- [ ] Day-87：DevOps 智能体（Agentic AI）入门：初探 Agentic AI 在运维中的应用，结合大语言模型构建自动化工作流。
+- [ ] Day-88：多工具智能体与 MCP：实战 Model Context Protocol (MCP) 与 LangChain，开发自动化 CI/CD 日志分析器。
+- [ ] Day-89：生产级 AI 运维智能体：实战部署 KubeHealer 等自愈系统，探索 AIOps 驱动的故障自愈与根因分析。
+- [ ] Day-90：DevOps 90 天终极收官：全面回顾并梳理 90 天技术栈知识体系，规划未来职业进阶与架构师之路。
 
