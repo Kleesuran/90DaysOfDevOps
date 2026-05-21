@@ -1,0 +1,64 @@
+version: '3.8'
+
+services:
+  # Database Service (PostgreSQL)
+  db:
+    image: docker.io/library/postgres:15-alpine
+    container_name: day34-db
+    restart: always
+    environment:
+      POSTGRES_USER: myuser
+      POSTGRES_PASSWORD: mypassword
+      POSTGRES_DB: mydb
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    networks:
+      - backend
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U myuser -d mydb"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    labels:
+      project: "90days-devops"
+      tier: "database"
+
+  # Cache Service (Redis)
+  redis:
+    image: docker.io/library/redis:7-alpine
+    container_name: day34-redis
+    restart: always
+    networks:
+      - backend
+    labels:
+      project: "90days-devops"
+      tier: "cache"
+
+  # Web Application Service (Flask)
+  web:
+    build: ./app
+    container_name: day34-web
+    ports:
+      - "5000:5000"
+    environment:
+      POSTGRES_USER: myuser
+      POSTGRES_PASSWORD: mypassword
+      POSTGRES_DB: mydb
+    networks:
+      - frontend
+      - backend
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    labels:
+      project: "90days-devops"
+      tier: "web"
+
+volumes:
+  db_data:
+
+networks:
+  frontend:
+  backend:
