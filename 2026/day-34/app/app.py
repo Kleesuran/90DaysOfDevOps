@@ -1,23 +1,14 @@
-import time
 import os
+import time
 from flask import Flask
-import redis
 import psycopg2
+import redis
 
 app = Flask(__name__)
 
 # Connect to Redis
-cache = redis.Redis(host='redis', port=6379)
-
-# Connect to PostgreSQL
-def get_db_connection():
-    conn = psycopg2.connect(
-        host="db",
-        database=os.environ.get("POSTGRES_DB", "mydb"),
-        user=os.environ.get("POSTGRES_USER", "myuser"),
-        password=os.environ.get("POSTGRES_PASSWORD", "mypassword")
-    )
-    return conn
+redis_host = os.environ.get('REDIS_HOST', 'redis')
+cache = redis.Redis(host=redis_host, port=6379)
 
 def get_hit_count():
     retries = 5
@@ -30,27 +21,36 @@ def get_hit_count():
             retries -= 1
             time.sleep(0.5)
 
+# Connect to Postgres
+def get_db_status():
+    db_host = os.environ.get('DB_HOST', 'db')
+    db_name = os.environ.get('POSTGRES_DB', 'postgres')
+    db_user = os.environ.get('POSTGRES_USER', 'postgres')
+    db_password = os.environ.get('POSTGRES_PASSWORD', 'postgres')
+    try:
+        conn = psycopg2.connect(
+            host=db_host,
+            database=db_name,
+            user=db_user,
+            password=db_password
+        )
+        cur = conn.cursor()
+        cur.execute('SELECT version();')
+        db_version = cur.fetchone()[0]
+        cur.close()
+        conn.close()
+        return f"Connected! Postgres version: {db_version}"
+    except Exception as e:
+        return f"Failed to connect to database: {str(e)}"
+
 @app.route('/')
 def hello():
     count = get_hit_count()
-    
-    # Check Database connection and get version
-    conn = get_db_connection()
-    cur = conn.cursor()
-    cur.execute('SELECT version();')
-    db_version = cur.fetchone()[0]
-    cur.close()
-    conn.close()
-    
+    db_status = get_db_status()
     return f"""
-    <div style="font-family: Arial, sans-serif; text-align: center; margin-top: 50px;">
-        <h1 style="color: #2e7d32;">Hello from Docker Compose! 🚀</h1>
-        <p style="font-size: 1.2em;">This page has been viewed <strong>{count}</strong> times.</p>
-        <p style="color: #555;">Successfully connected to the database!</p>
-        <p style="font-size: 0.9em; color: #888; background-color: #f5f5f5; display: inline-block; padding: 10px; border-radius: 5px;">
-            DB Version: {db_version}
-        </p>
-    </div>
+    <h1>Day 34: Advanced Docker Compose</h1>
+    <p>Redis Cache hits: <b>{count}</b> times.</p>
+    <p>Database Status: <b>{db_status}</b></p>
     """
 
 if __name__ == "__main__":
