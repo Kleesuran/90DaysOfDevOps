@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DevOps Dashboard & Task Manager</title>
+    <!-- Google Fonts: Inter & Outfit -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons for modern visuals -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="glow-container">
+        <div class="glow-orb orb-1"></div>
+        <div class="glow-orb orb-2"></div>
+    </div>
+
+    <div class="container">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="logo-area">
+                <i class="fa-solid fa-cubes-stacked brand-icon"></i>
+                <div>
+                    <h1>DevOps Control Center</h1>
+                    <p class="subtitle">#90DaysOfDevOps • Day 36 Project</p>
+                </div>
+            </div>
+            <div class="status-badge" id="overall-status">
+                <span class="pulse-dot green"></span>
+                <span class="status-text">All Systems Operational</span>
+            </div>
+        </header>
+
+        <!-- Main Grid Layout -->
+        <div class="dashboard-grid">
+            
+            <!-- Left Side: System Metrics Dashboard -->
+            <section class="card glass metrics-panel">
+                <div class="card-header">
+                    <i class="fa-solid fa-server section-icon"></i>
+                    <h2>Host Telemetry</h2>
+                </div>
+                
+                <div class="metrics-container">
+                    <!-- CPU Gauge -->
+                    <div class="metric-box">
+                        <div class="metric-info">
+                            <span class="metric-name"><i class="fa-solid fa-microchip"></i> CPU Usage</span>
+                            <span class="metric-value" id="cpu-val">0.0%</span>
+                        </div>
+                        <div class="progress-bar-bg">
+                            <div class="progress-bar-fill" id="cpu-bar" style="width: 0%"></div>
+                        </div>
+                    </div>
+
+                    <!-- Memory Gauge -->
+                    <div class="metric-box">
+                        <div class="metric-info">
+                            <span class="metric-name"><i class="fa-solid fa-memory"></i> Memory Load</span>
+                            <span class="metric-value" id="mem-val">0.0%</span>
+                        </div>
+                        <div class="progress-bar-bg">
+                            <div class="progress-bar-fill" id="mem-bar" style="width: 0%"></div>
+                        </div>
+                    </div>
+
+                    <!-- Disk Gauge -->
+                    <div class="metric-box">
+                        <div class="metric-info">
+                            <span class="metric-name"><i class="fa-solid fa-hard-drive"></i> Disk Space</span>
+                            <span class="metric-value" id="disk-val">0.0%</span>
+                        </div>
+                        <div class="progress-bar-bg">
+                            <div class="progress-bar-fill" id="disk-bar" style="width: 0%"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="system-meta">
+                    <div class="meta-row">
+                        <span class="meta-label">System Uptime:</span>
+                        <span class="meta-val" id="uptime-val">Loading...</span>
+                    </div>
+                    <div class="meta-row">
+                        <span class="meta-label">Platform:</span>
+                        <span class="meta-val" id="platform-val">Loading...</span>
+                    </div>
+                    <div class="meta-row">
+                        <span class="meta-label">Node Runtime:</span>
+                        <span class="meta-val" id="node-val">Loading...</span>
+                    </div>
+                    <div class="meta-row">
+                        <span class="meta-label">Environment:</span>
+                        <span class="meta-val badge">docker-compose</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Right Side: DevOps Task Manager -->
+            <section class="card glass tasks-panel">
+                <div class="card-header">
+                    <i class="fa-solid fa-list-check section-icon"></i>
+                    <h2>Deployment Backlog</h2>
+                </div>
+
+                <!-- Add Task Form -->
+                <form id="task-form" class="task-form">
+                    <div class="input-group">
+                        <input type="text" id="task-title" placeholder="New DevOps task (e.g. Setup Kubernetes Ingress)..." required autocomplete="off">
+                        <input type="text" id="task-desc" placeholder="Details/Description..." autocomplete="off">
+                        <button type="submit" class="btn-submit">
+                            <i class="fa-solid fa-plus"></i> Add Task
+                        </button>
+                    </div>
+                </form>
+
+                <!-- Tasks List -->
+                <div class="tasks-wrapper">
+                    <div id="loading-tasks" class="loading-state">
+                        <i class="fa-solid fa-circle-notch fa-spin"></i> Loading tasks from MongoDB...
+                    </div>
+                    <div id="empty-tasks" class="empty-state hidden">
+                        <i class="fa-solid fa-circle-check"></i>
+                        <p>No active tasks. Your infrastructure is perfectly deployed!</p>
+                    </div>
+                    <ul id="tasks-list" class="tasks-list">
+                        <!-- Dynamic content loaded via JS -->
+                    </ul>
+                </div>
+            </section>
+        </div>
+
+        <!-- Footer -->
+        <footer class="app-footer">
+            <p>Made with <i class="fa-solid fa-heart heart-icon"></i> for DevOps 90 Days Challenge. Powered by Docker, Node.js, and MongoDB.</p>
+        </footer>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

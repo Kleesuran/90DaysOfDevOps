@@ -35,7 +35,7 @@
 - [ ] Day-33：Docker Compose 基础：使用 YAML 编排多容器应用，实现服务一键启动。
 - [ ] Day-34：生产级 Compose 配置：处理健康检查（Healthchecks）、重启策略与服务依赖。
 - [ ] Day-35：镜像优化与分发：掌握 Docker 多阶段构建（Multi-Stage）并将镜像发布至 Docker Hub。
-- [ ] Day-36：容器化项目实战：端到端 Dockerize 一个包含数据库、缓存与前端的完整应用。
+- [x] Day-36：容器化项目实战：端到端 Dockerize 一个包含数据库、缓存与前端的完整应用。
 - [ ] Day-37：容器化深度复盘：总结 Docker 核心指令，制作个人容器化技术速查手册。
 - [ ] Day-38：YAML 语言基础：深入理解 DevOps 配置文件语法，为 CI/CD 自动化打好基础。
 - [ ] Day-39：CI/CD 核心理念：解析持续集成/交付/部署的概念模型与标准流水线架构。

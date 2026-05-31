@@ -1,0 +1,63 @@
+version: '3.8'
+
+services:
+  # Frontend static server (Nginx Reverse Proxy)
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "${FRONTEND_PORT:-8080}:8080"
+    depends_on:
+      - backend
+    networks:
+      - devops-net
+    restart: always
+    labels:
+      project: "90days-devops-project"
+      role: "frontend"
+
+  # Backend Node.js API Service
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "${PORT:-3000}:3000"
+    environment:
+      - MONGO_URI=${MONGO_URI:-mongodb://db:27017/devops_tasks}
+      - PORT=${PORT:-3000}
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - devops-net
+    restart: always
+    labels:
+      project: "90days-devops-project"
+      role: "backend-api"
+
+  # Database Service (MongoDB)
+  db:
+    image: docker.io/library/mongo:6-jammy
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - devops-net
+    restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "mongosh --eval \"db.adminCommand('ping')\" || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    labels:
+      project: "90days-devops-project"
+      role: "database"
+
+networks:
+  devops-net:
+    driver: bridge
+
+volumes:
+  mongo_data:
