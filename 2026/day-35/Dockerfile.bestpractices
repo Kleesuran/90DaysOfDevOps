@@ -1,0 +1,27 @@
+# Stage 1: Build the binary in a specific and smaller build image
+FROM golang:1.21-alpine AS builder
+
+WORKDIR /app
+
+COPY main.go .
+
+# Build static binary for alpine
+RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o main main.go
+
+# Stage 2: Run the binary using a minimal, secure base image with a non-root user
+FROM alpine:3.18.4
+
+# Create a non-root user and group
+RUN addgroup -S appgroup && adduser -S appuser -G appgroup
+
+# Run as non-root
+USER appuser
+
+WORKDIR /app
+
+# Copy binary from builder
+COPY --from=builder --chown=appuser:appgroup /app/main .
+
+EXPOSE 8080
+
+CMD ["./main"]
