@@ -1,0 +1,23 @@
+# Day 38 - Task 3 & 4: server.yaml
+server:
+  name: "web-server-01"
+  ip: "192.168.1.10"
+  port: 80
+
+database:
+  host: "db-server-01"
+  name: "production_db"
+  credentials:
+    user: "db_admin"
+    password: "securepassword123"
+
+# Task 4: Add startup_script below using | and >
+startup_script_preserve: |
+  echo "Updating packages..."
+  apt-get update -y
+  echo "Done!"
+
+startup_script_folded: >
+  This is a very long text
+  that we want to write on multiple lines
+  but have it read as a single line.

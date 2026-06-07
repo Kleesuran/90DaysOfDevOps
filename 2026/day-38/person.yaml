@@ -1,0 +1,14 @@
+# Day 38 - Task 1 & 2: person.yaml
+name: "Kleesuran"
+role: "Want to be a DevOps Engineer!"
+experience_years: 0
+learning: true
+
+# Task 2: Add tools and hobbies below
+tools:
+  - linux
+  - docker
+  - kubernetes
+  - GCP
+  - Terraform
+hobbies: [video-games, cooking]
