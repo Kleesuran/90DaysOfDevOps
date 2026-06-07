@@ -1,0 +1,67 @@
+# =====================================================================
+# 挑战 [2, 3, 6]: 编写多容器 docker-compose.yml 并整合环境变量与健康检测
+# 场景：启动 PostgreSQL 数据库服务 (db) 和 Node.js 应用服务 (web)
+# =====================================================================
+
+version: '3.8'
+
+services:
+  # -------------------------------------------------------------------
+  # 数据库服务
+  # -------------------------------------------------------------------
+  db:
+    image: postgres:15-alpine
+    # TODO 1: 使用 .env 文件中定义的变量来配置 PostgreSQL 密码和数据库名
+    # 提示：使用 ${VARIABLE_NAME} 语法
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+    
+    # TODO 2: 我们需要把数据库数据持久化到宿主机。请将一个“命名卷”挂载到容器的数据库数据目录下。
+    # 提示：PostgreSQL 默认数据路径为 /var/lib/postgresql/data
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+    # TODO 3: 配置健康检查，以便让其他服务知道它何时“真正”准备好接受连接了。
+    # 提示：PostgreSQL 官方提供了 pg_isready 工具来进行健康检测
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s    # 检测间隔时间
+      timeout: 5s     # 超时时间
+      retries: 5      # 失败重试次数
+      start_period: 5s # 启动后多长时间开始进行健康检测
+
+  # -------------------------------------------------------------------
+  # Web 应用程序服务
+  # -------------------------------------------------------------------
+  web:
+    # 告诉 Compose 怎么去构建 web 镜像
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    
+    # 注入应用连接数据库所需的环境变量
+    environment:
+      # TODO 4: 我们的 Web 容器在网络中连接 db 时，数据库的 Host 应该填什么？
+      # 提示：同一自定义网络下，可以直接通过对方的“服务名”进行通信。
+      DB_HOST: db
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_NAME: ${DB_NAME}
+
+    # TODO 5: 配置依赖关系。我们不仅需要 web 在 db 启动之后启动，
+    # 还需要等到 db 服务“健康检查通过 (healthy)”之后才允许启动 web。
+    # 请补全以下 depends_on 的高级语法：
+    depends_on:
+      db:
+        condition: service_healthy
+
+# -------------------------------------------------------------------
+# 数据卷与网络声明
+# -------------------------------------------------------------------
+# TODO 6: 别忘了在最外层声明我们在 db 服务中使用的命名卷 "pgdata"
+volumes:
+  pgdata:
