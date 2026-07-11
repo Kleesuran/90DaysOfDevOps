@@ -1,0 +1,25 @@
+# Day 40 – Your First GitHub Actions Workflow Template
+# Copy this to .github/workflows/hello.yml in your repository
+
+name: Hello Workflow
+
+# TODO: Define when this workflow should run (e.g. trigger on every push)
+on:
+  # Hint: use 'push' keyword
+
+jobs:
+  greet:
+    # TODO: Define the runner OS (runs-on)
+    # Hint: runs-on: ubuntu-latest
+    runs-on: 
+
+    steps:
+      # TODO: Step 1: Check out the code
+      # Hint: uses: actions/checkout@v4
+      - name: Check out repository code
+        
+
+      # TODO: Step 2: Print "Hello from GitHub Actions!"
+      # Hint: run a shell command using echo
+      - name: Greet the user
+        

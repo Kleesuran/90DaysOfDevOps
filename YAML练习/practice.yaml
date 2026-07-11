@@ -1,0 +1,15 @@
+# YAML 练习文件 (practice.yaml)
+# 请在这里完成你的第一个 YAML 编写！
+
+# 任务 1: 创建 app 对象，包含 name 和 version 两个属性
+# 提示: 注意缩进和冒号后的空格
+app:
+  # 在此填入 name: my-devops-app 和 version: 1.0.0
+
+
+# 任务 2: 创建 services 列表，包含两个服务 (web 和 redis)，各有一个 name 和 port 属性
+# 提示: 列表项使用 - 开头，列表项内部的属性要保持缩进对齐
+services:
+  # 在此填入两个服务的定义
+
+
